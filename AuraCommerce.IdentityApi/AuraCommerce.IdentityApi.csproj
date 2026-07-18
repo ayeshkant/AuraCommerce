@@ -25,11 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Entities\" />
-    <Folder Include="Core\Interfaces\" />
     <Folder Include="Core\Validators\" />
     <Folder Include="Infrastructure\Middleware\" />
-    <Folder Include="Infrastructure\Repositories\" />
   </ItemGroup>
 
 </Project>

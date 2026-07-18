@@ -1,91 +1,4 @@
 ﻿
-//using EFCore;
-//using EFCore.DTOs;
-//using Microsoft.EntityFrameworkCore;
-
-//using AppDbContext context = new AppDbContext();
-
-//var products = context.Products.Include(p => p.Category).Select(p => new ProductSummaryDto { Sku=p.SKU,ProductName=p.Name,CategoryName=p.Category.Name}).ToList();
-
-//foreach (var product in products)
-//{
-//    Console.WriteLine($"[{product.Sku}] {product.ProductName} - (Category: {product.CategoryName})");
-//}
-
-//var totalRevenue = context.Products.Sum(p => p.Price);
-//Console.WriteLine($"Total Potential Revenue ${totalRevenue}");
-
-//var category = context.Categories.Where(c => c.Name == "Accessories").Include(c => c.Products).FirstOrDefault();
-
-//var deletedProduct=context.Products.Where(p => p.SKU == "Mou101").FirstOrDefault();
-//if (deletedProduct!=null)
-//{
-//    context.Products.Remove(deletedProduct);
-//    context.SaveChanges();
-//}
-////Requirement 1
-//var allProducts = context.Products.ToList();
-//var allCategories = context.Categories.ToList();
-
-//var combinedProduct = allProducts.Join(allCategories, p => p.CategoryId, c => c.Id, (prod, cat) => new { ProductName = prod.Name, CategoryName = cat.Name }).ToList();
-//foreach (var item in combinedProduct)
-//{
-//    Console.WriteLine($"{item.ProductName} - (Category) {item.CategoryName}");
-//}
-////Requirement 2
-//var result = context.Products.Include(p => p.Category).GroupBy(p => p.Category.Name).Select(p => new { CategoryName = p.Key, TotalItems = p.CountBy(r => r.Id), AvgPrice = p.Average(r => r.Price) }).ToList();
-//foreach (var item in result)
-//{
-//    Console.WriteLine($"Category:{item.CategoryName}| Total Items:{item.TotalItems}| Avg Price:{item.AvgPrice}");
-//}
-////Requirement 3
-//var pagination = allProducts.OrderByDescending(p => p.Price).Skip(1).Take(1).ToList();
-
-//foreach (var item in pagination)
-//{
-//    Console.WriteLine($"{item.Name}");
-//}
-
-////Requirement 4
-//var data = context.Products.Where(p => p.Price < 50000).Select(s => new ProductDto { Sku = s.SKU, ProductName = s.Name }).ToList();
-
-//2. The Async Read
-//var filteredProducts = await context.Products.Include(p => p.Category).Where(c => c.Category.Name == "Computers").ToListAsync();
-
-//foreach (var product in filteredProducts)
-//{
-//    Console.WriteLine($"{product.Name} - {product.Price}");
-//}
-
-////3. The Async Write
-//Product newProduct = new Product { Name = "Monitor", Price = 15000, SKU = "Mon101", CategoryId = 1 }; //Name: "Monitor", Price: 15000, SKU: "Mon101", CategoryId: 1
-//await context.Products.AddAsync(newProduct);
-//await context.SaveChangesAsync();
-
-//transactions
-//using var transaction = await context.Database.BeginTransactionAsync();
-//try
-//{
-//	var product = await context.Products.Where(p => p.Name == "Laptop").FirstOrDefaultAsync();
-//    if (product!=null)
-//    {
-//        product.Price = 6000;
-//        await context.SaveChangesAsync();
-//    }
-//    var keyboard = await context.Products.Where(p => p.Name == "Keyboard").FirstOrDefaultAsync();
-//    if (keyboard != null)
-//    {
-//        keyboard.Price = -500;
-//        await context.SaveChangesAsync();
-//    }
-//    await transaction.CommitAsync();
-//}
-//catch (Exception ex)
-//{
-//    Console.WriteLine($"Transaction Failed: {ex.Message}");
-//    await transaction.RollbackAsync();
-//}
-
 using AuraCommerce.CatalogApi.Core.DTOs;
 using AuraCommerce.CatalogApi.Core.Entities;
 using AuraCommerce.CatalogApi.Core.Interfaces;
@@ -152,12 +65,13 @@ try
     {
         // 1. Parse the endpoint configuration (this no longer contains a password)
         var redisOptions = ConfigurationOptions.Parse(redisEndPoint);
+        var tenantId = builder.Configuration["TenantId"];
     
         // 2. Attach the Microsoft Entra ID Token Credential seamlessly
         // This reuses the same identity context you are already using for Key Vault
         await redisOptions.ConfigureForAzureWithTokenCredentialAsync(new DefaultAzureCredential(new DefaultAzureCredentialOptions
         {
-            TenantId = "b0a1caac-f2b5-4a00-aea0-41e315e13539" // or use AdditionallyAllowedTenants = { "*" } for broader allow
+            TenantId = tenantId // or use AdditionallyAllowedTenants = { "*" } for broader allow
         }));
     
         // 3. Establish the connection multiplexer

@@ -1,4 +1,5 @@
 ﻿using AuraCommerce.IdentityApi.Core.DTOs;
+using AuraCommerce.IdentityApi.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -14,31 +15,20 @@ namespace AuraCommerce.IdentityApi.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
-
-        public AuthController(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService, IConfiguration configuration)
         {
-            _userManager = userManager;
+            _authService = authService;
             _configuration = configuration;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            IdentityUser identityUser = new IdentityUser
+            var result=await _authService.Register(registerDto);
+            if (result.isSucceeded)
             {
-                Email = registerDto.Email,
-                UserName=registerDto.Email
-            };
-            var result=await _userManager.CreateAsync(identityUser, registerDto.Password);
-            if (result.Succeeded)
-            {
-                var isInRole = await _userManager.AddToRoleAsync(identityUser, "Customer");
-                if (isInRole.Succeeded)
-                {
-                    return Ok();
-                }
-                return BadRequest(isInRole.Errors);
+                return Ok();
             }
             return BadRequest(result.Errors);
         }
@@ -47,17 +37,15 @@ namespace AuraCommerce.IdentityApi.Controllers
         {
             if (loginDto!=null)
             {
-                var user = await _userManager.FindByEmailAsync(loginDto.Email);
-                if (user != null)
+                var user = await _authService.Login(loginDto);
+                if (user.AuthUser != null)
                 {
-                    var validPassword=await _userManager.CheckPasswordAsync(user, loginDto.Password);
-                    if (validPassword)
+                    if (user.validPassword)
                     {
-                        var roles= await _userManager.GetRolesAsync(user);
-                        var token=GenerateToken(user.Id,user.UserName,roles.ToList());
+                        var token = GenerateToken(user.AuthUser.Id, user.AuthUser.UserName, user.Roles.ToList());
                         return Ok(new { Token = token });
                     }
-                    return Unauthorized($"Password provide for user {user.UserName} is invalid");
+                    return Unauthorized($"Password provide for user {user.AuthUser.UserName} is invalid");
                 }
                 return Unauthorized($"User {loginDto.Email} does not exist");
             }

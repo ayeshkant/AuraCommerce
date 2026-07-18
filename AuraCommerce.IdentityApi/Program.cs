@@ -1,4 +1,6 @@
+using AuraCommerce.IdentityApi.Core.Interfaces;
 using AuraCommerce.IdentityApi.Infrastructure.Data;
+using AuraCommerce.IdentityApi.Infrastructure.Repositories;
 using Azure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +64,7 @@ try
     builder.Services.AddIdentity<IdentityUser, IdentityRole>()
         .AddEntityFrameworkStores<AppIdentityDbContext>()
         .AddDefaultTokenProviders();
+    builder.Services.AddScoped<IAuthService, AuthService>();
     
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();

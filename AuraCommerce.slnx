@@ -4,6 +4,7 @@
   </Folder>
   <Project Path="AuraCommerce.CatalogApi.Tests/AuraCommerce.CatalogApi.Tests.csproj" Id="7fb9c726-480a-4337-bd5c-50ee6f221268" />
   <Project Path="AuraCommerce.IdentityApi.Tests/AuraCommerce.IdentityApi.Tests.csproj" Id="cd43897f-8c01-426d-8869-183bc24b3757" />
+  <Project Path="AuraCommerce.OrderApi/AuraCommerce.OrderApi.csproj" Id="dd406050-d27f-444f-be38-ec8078b621ad" />
   <Project Path="D:/AuraCommerce/AuraCommerce.CatalogApi/AuraCommerce.CatalogApi.csproj" />
   <Project Path="D:/AuraCommerce/AuraCommerce.IdentityApi/AuraCommerce.IdentityApi.csproj" Id="faf00f44-871d-4d6b-b7a1-3fa7f4a35e28" />
 </Solution>

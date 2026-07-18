@@ -1,5 +1,6 @@
 ﻿using AuraCommerce.IdentityApi.Controllers;
 using AuraCommerce.IdentityApi.Core.DTOs;
+using AuraCommerce.IdentityApi.Core.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace AuraCommerce.IdentityApi.Tests
         public async Task Register_ValidUser_ReturnsOkResult()
         {
             var mockConfig = new Mock<IConfiguration>();
+            var mockAuthUser = new Mock<IAuthService>();
             var mockStore = new Mock<IUserStore<IdentityUser>>();
             var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object,null,null, null, null, null, null, null, null);
 
@@ -23,7 +25,7 @@ namespace AuraCommerce.IdentityApi.Tests
             mockUserManager.Setup(u=>u.AddToRoleAsync(It.IsAny<IdentityUser>(),"Customer"))
                 .ReturnsAsync(IdentityResult.Success);
 
-            var authController = new AuthController(mockUserManager.Object, mockConfig.Object);
+            var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             var registerDto = new RegisterDto
             {
@@ -39,6 +41,7 @@ namespace AuraCommerce.IdentityApi.Tests
         public async Task Register_InValidUser_ReturnsBadResult()
         {
             var mockConfig = new Mock<IConfiguration>();
+            var mockAuthUser = new Mock<IAuthService>();
             var mockStore = new Mock<IUserStore<IdentityUser>>();
             var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
 
@@ -48,7 +51,7 @@ namespace AuraCommerce.IdentityApi.Tests
             mockUserManager.Setup(u => u.AddToRoleAsync(It.IsAny<IdentityUser>(), "Customer"))
                 .ReturnsAsync(IdentityResult.Failed());
 
-            var authController = new AuthController(mockUserManager.Object, mockConfig.Object);
+            var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             var registerDto = new RegisterDto
             {
@@ -64,13 +67,14 @@ namespace AuraCommerce.IdentityApi.Tests
         public async Task Register_InValidUserRole_ReturnsBadResult()
         {
             var mockConfig = new Mock<IConfiguration>();
+            var mockAuthUser = new Mock<IAuthService>();
             var mockStore = new Mock<IUserStore<IdentityUser>>();
             var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
 
             mockUserManager.Setup(u => u.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Failed());
 
-            var authController = new AuthController(mockUserManager.Object, mockConfig.Object);
+            var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             var registerDto = new RegisterDto
             {
@@ -86,6 +90,7 @@ namespace AuraCommerce.IdentityApi.Tests
         public async Task Login_ValidUser_ReturnsOkResult()
         {
             var mockConfig = new Mock<IConfiguration>();
+            var mockAuthUser = new Mock<IAuthService>();
             var mockStore = new Mock<IUserStore<IdentityUser>>();
             var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
 
@@ -96,7 +101,7 @@ namespace AuraCommerce.IdentityApi.Tests
             mockConfig.Setup(c => c["JwtSettings:Issuer"]).Returns("auracommerce.com");
             mockConfig.Setup(c => c["JwtSettings:Audience"]).Returns("auracommerce.com");
 
-            var authController = new AuthController(mockUserManager.Object, mockConfig.Object);
+            var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             var loginDto = new LoginDto
             {
@@ -112,10 +117,11 @@ namespace AuraCommerce.IdentityApi.Tests
         public async Task Login_NullLoginDto_ReturnsBadRequest()
         {
             var mockConfig = new Mock<IConfiguration>();
+            var mockAuthUser = new Mock<IAuthService>();
             var mockStore = new Mock<IUserStore<IdentityUser>>();
             var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
 
-            var authController = new AuthController(mockUserManager.Object, mockConfig.Object);
+            var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             LoginDto loginDto = null;
 
@@ -127,6 +133,7 @@ namespace AuraCommerce.IdentityApi.Tests
         public async Task Login_NullUser_ReturnsUnauthorized()
         {
             var mockConfig = new Mock<IConfiguration>();
+            var mockAuthUser = new Mock<IAuthService>();
             var mockStore = new Mock<IUserStore<IdentityUser>>();
             var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
 
@@ -137,7 +144,7 @@ namespace AuraCommerce.IdentityApi.Tests
             mockConfig.Setup(c => c["JwtSettings:Issuer"]).Returns("auracommerce.com");
             mockConfig.Setup(c => c["JwtSettings:Audience"]).Returns("auracommerce.com");
 
-            var authController = new AuthController(mockUserManager.Object, mockConfig.Object);
+            var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             var loginDto = new LoginDto
             {
@@ -153,6 +160,7 @@ namespace AuraCommerce.IdentityApi.Tests
         public async Task Login_InValidPassword_ReturnsUnauthorized()
         {
             var mockConfig = new Mock<IConfiguration>();
+            var mockAuthUser = new Mock<IAuthService>();
             var mockStore = new Mock<IUserStore<IdentityUser>>();
             var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
 
@@ -163,7 +171,7 @@ namespace AuraCommerce.IdentityApi.Tests
             mockConfig.Setup(c => c["JwtSettings:Issuer"]).Returns("auracommerce.com");
             mockConfig.Setup(c => c["JwtSettings:Audience"]).Returns("auracommerce.com");
 
-            var authController = new AuthController(mockUserManager.Object, mockConfig.Object);
+            var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             var loginDto = new LoginDto
             {

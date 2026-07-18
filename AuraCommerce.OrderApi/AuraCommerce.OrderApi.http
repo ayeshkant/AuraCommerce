@@ -1,0 +1,6 @@
+@AuraCommerce.OrderApi_HostAddress = http://localhost:5183
+
+GET {{AuraCommerce.OrderApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
