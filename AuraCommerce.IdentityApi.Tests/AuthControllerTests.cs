@@ -16,14 +16,6 @@ namespace AuraCommerce.IdentityApi.Tests
         {
             var mockConfig = new Mock<IConfiguration>();
             var mockAuthUser = new Mock<IAuthService>();
-            var mockStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object,null,null, null, null, null, null, null, null);
-
-            mockUserManager.Setup(u => u.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success);
-
-            mockUserManager.Setup(u=>u.AddToRoleAsync(It.IsAny<IdentityUser>(),"Customer"))
-                .ReturnsAsync(IdentityResult.Success);
 
             var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
@@ -42,14 +34,6 @@ namespace AuraCommerce.IdentityApi.Tests
         {
             var mockConfig = new Mock<IConfiguration>();
             var mockAuthUser = new Mock<IAuthService>();
-            var mockStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
-
-            mockUserManager.Setup(u => u.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success);
-
-            mockUserManager.Setup(u => u.AddToRoleAsync(It.IsAny<IdentityUser>(), "Customer"))
-                .ReturnsAsync(IdentityResult.Failed());
 
             var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
@@ -68,12 +52,7 @@ namespace AuraCommerce.IdentityApi.Tests
         {
             var mockConfig = new Mock<IConfiguration>();
             var mockAuthUser = new Mock<IAuthService>();
-            var mockStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
-
-            mockUserManager.Setup(u => u.CreateAsync(It.IsAny<IdentityUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Failed());
-
+            
             var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             var registerDto = new RegisterDto
@@ -91,12 +70,6 @@ namespace AuraCommerce.IdentityApi.Tests
         {
             var mockConfig = new Mock<IConfiguration>();
             var mockAuthUser = new Mock<IAuthService>();
-            var mockStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
-
-            mockUserManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new IdentityUser { UserName="testuser@auracommerce.com", Email = "testuser@auracommerce.com" });
-            mockUserManager.Setup(u => u.CheckPasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>())).ReturnsAsync(true);
-            mockUserManager.Setup(u => u.GetRolesAsync(It.IsAny<IdentityUser>())).ReturnsAsync(new List<string>());
             mockConfig.Setup(c => c["JwtSettings:SecretKey"]).Returns("ThisIsASuperSecretKeyThatIsAtLeast32BytesLong!");
             mockConfig.Setup(c => c["JwtSettings:Issuer"]).Returns("auracommerce.com");
             mockConfig.Setup(c => c["JwtSettings:Audience"]).Returns("auracommerce.com");
@@ -118,9 +91,7 @@ namespace AuraCommerce.IdentityApi.Tests
         {
             var mockConfig = new Mock<IConfiguration>();
             var mockAuthUser = new Mock<IAuthService>();
-            var mockStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
-
+            
             var authController = new AuthController(mockAuthUser.Object, mockConfig.Object);
 
             LoginDto loginDto = null;
@@ -134,12 +105,6 @@ namespace AuraCommerce.IdentityApi.Tests
         {
             var mockConfig = new Mock<IConfiguration>();
             var mockAuthUser = new Mock<IAuthService>();
-            var mockStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
-
-            mockUserManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((IdentityUser)null);
-            mockUserManager.Setup(u => u.CheckPasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>())).ReturnsAsync(true);
-            mockUserManager.Setup(u => u.GetRolesAsync(It.IsAny<IdentityUser>())).ReturnsAsync(new List<string>());
             mockConfig.Setup(c => c["JwtSettings:SecretKey"]).Returns("ThisIsASuperSecretKeyThatIsAtLeast32BytesLong!");
             mockConfig.Setup(c => c["JwtSettings:Issuer"]).Returns("auracommerce.com");
             mockConfig.Setup(c => c["JwtSettings:Audience"]).Returns("auracommerce.com");
@@ -161,12 +126,7 @@ namespace AuraCommerce.IdentityApi.Tests
         {
             var mockConfig = new Mock<IConfiguration>();
             var mockAuthUser = new Mock<IAuthService>();
-            var mockStore = new Mock<IUserStore<IdentityUser>>();
-            var mockUserManager = new Mock<UserManager<IdentityUser>>(mockStore.Object, null, null, null, null, null, null, null, null);
-
-            mockUserManager.Setup(u => u.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new IdentityUser { UserName = "testuser@auracommerce.com", Email = "testuser@auracommerce.com" });
-            mockUserManager.Setup(u => u.CheckPasswordAsync(It.IsAny<IdentityUser>(), It.IsAny<string>())).ReturnsAsync(false);
-            mockUserManager.Setup(u => u.GetRolesAsync(It.IsAny<IdentityUser>())).ReturnsAsync(new List<string>());
+            
             mockConfig.Setup(c => c["JwtSettings:SecretKey"]).Returns("ThisIsASuperSecretKeyThatIsAtLeast32BytesLong!");
             mockConfig.Setup(c => c["JwtSettings:Issuer"]).Returns("auracommerce.com");
             mockConfig.Setup(c => c["JwtSettings:Audience"]).Returns("auracommerce.com");
