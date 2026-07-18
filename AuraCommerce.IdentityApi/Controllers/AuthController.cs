@@ -1,8 +1,5 @@
 ﻿using AuraCommerce.IdentityApi.Core.DTOs;
 using AuraCommerce.IdentityApi.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

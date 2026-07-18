@@ -17,14 +17,14 @@ namespace AuraCommerce.IdentityApi.Infrastructure.Repositories
         {
             var authResult = new AuthResult();
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            authResult.UserId = user.Id;
+            authResult.UserName = user.UserName;
             if (user != null)
             {
                 authResult.ValidPassword = await _userManager.CheckPasswordAsync(user, loginDto.Password);
                 if (authResult.ValidPassword)
                 {
                     authResult.Roles = await _userManager.GetRolesAsync(user);
-                    authResult.UserId = user.Id;
-                    authResult.UserName = user.UserName;
                 }
             }
             return authResult;
