@@ -1,4 +1,5 @@
-﻿using AuraCommerce.IdentityApi.Core.DTOs;
+﻿using System.Linq;
+using AuraCommerce.IdentityApi.Core.DTOs;
 using AuraCommerce.IdentityApi.Core.Entities;
 using AuraCommerce.IdentityApi.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -15,13 +16,15 @@ namespace AuraCommerce.IdentityApi.Infrastructure.Repositories
         public async Task<AuthResult> Login(LoginDto loginDto)
         {
             var authResult = new AuthResult();
-            authResult.AuthUser = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (authResult.AuthUser != null)
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user != null)
             {
-                authResult.validPassword = await _userManager.CheckPasswordAsync(authResult.AuthUser, loginDto.Password);
-                if (authResult.validPassword)
+                authResult.ValidPassword = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+                if (authResult.ValidPassword)
                 {
-                    authResult.Roles = await _userManager.GetRolesAsync(authResult.AuthUser);
+                    authResult.Roles = await _userManager.GetRolesAsync(user);
+                    authResult.UserId = user.Id;
+                    authResult.UserName = user.UserName;
                 }
             }
             return authResult;
@@ -39,12 +42,12 @@ namespace AuraCommerce.IdentityApi.Infrastructure.Repositories
             if (result.Succeeded)
             {
                 var isInRole = await _userManager.AddToRoleAsync(identityUser, "Customer");
-                authResult.isSucceeded = isInRole.Succeeded;
-                authResult.Errors = isInRole.Errors;
+                authResult.IsSucceeded = isInRole.Succeeded;
+                authResult.Errors = isInRole.Errors.Select(e => e.Description);
                 return authResult;
             }
-            authResult.isSucceeded = result.Succeeded;
-            authResult.Errors = result.Errors;
+            authResult.IsSucceeded = result.Succeeded;
+            authResult.Errors = result.Errors.Select(e => e.Description);
             return authResult;
         }
     }

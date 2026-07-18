@@ -26,7 +26,7 @@ namespace AuraCommerce.IdentityApi.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             var result=await _authService.Register(registerDto);
-            if (result.isSucceeded)
+            if (result.IsSucceeded)
             {
                 return Ok();
             }
@@ -38,14 +38,14 @@ namespace AuraCommerce.IdentityApi.Controllers
             if (loginDto!=null)
             {
                 var user = await _authService.Login(loginDto);
-                if (user.AuthUser != null)
+                if (user.UserId != null)
                 {
-                    if (user.validPassword)
+                    if (user.ValidPassword)
                     {
-                        var token = GenerateToken(user.AuthUser.Id, user.AuthUser.UserName, user.Roles.ToList());
+                        var token = GenerateToken(user.UserId, user.UserName, user.Roles.ToList());
                         return Ok(new { Token = token });
                     }
-                    return Unauthorized($"Password provide for user {user.AuthUser.UserName} is invalid");
+                    return Unauthorized($"Password provide for user {user.UserName} is invalid");
                 }
                 return Unauthorized($"User {loginDto.Email} does not exist");
             }

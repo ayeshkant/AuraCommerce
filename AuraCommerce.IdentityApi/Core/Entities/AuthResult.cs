@@ -4,10 +4,12 @@ namespace AuraCommerce.IdentityApi.Core.Entities
 {
     public class AuthResult
     {
-        public bool isSucceeded { get; set; }
-        public IEnumerable<IdentityError> Errors { get; set; }
-        public IdentityUser? AuthUser { get; set; }
-        public bool validPassword { get; set; }
+        public bool IsSucceeded { get; set; }
+        public IEnumerable<string> Errors { get; set; }
+        public string User { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public bool ValidPassword { get; set; }
         public IList<string> Roles { get; set; }
     }
 }
