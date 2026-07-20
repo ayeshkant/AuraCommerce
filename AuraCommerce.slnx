@@ -1,10 +1,15 @@
 <Solution>
+  <Folder Name="/Orders/">
+    <Project Path="Orders/AuraCommerce.Orders.Api/AuraCommerce.Orders.Api.csproj" Id="7afc9a6a-8ea1-4fbd-8e72-662f15856573" />
+    <Project Path="Orders/AuraCommerce.Orders.Application/AuraCommerce.Orders.Application.csproj" Id="c9e5acdb-7eb9-4e32-9402-f7003f659ab0" />
+    <Project Path="Orders/AuraCommerce.Orders.Domain/AuraCommerce.Orders.Domain.csproj" Id="694229b8-61fd-40e9-ad90-b8d91ebd65ea" />
+    <Project Path="Orders/AuraCommerce.Orders.Infrastructure/AuraCommerce.Orders.Infrastructure.csproj" Id="be435d5f-5189-468b-93b4-83600225a085" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.yml" />
   </Folder>
   <Project Path="AuraCommerce.CatalogApi.Tests/AuraCommerce.CatalogApi.Tests.csproj" Id="7fb9c726-480a-4337-bd5c-50ee6f221268" />
   <Project Path="AuraCommerce.IdentityApi.Tests/AuraCommerce.IdentityApi.Tests.csproj" Id="cd43897f-8c01-426d-8869-183bc24b3757" />
-  <Project Path="AuraCommerce.OrderApi/AuraCommerce.OrderApi.csproj" Id="dd406050-d27f-444f-be38-ec8078b621ad" />
   <Project Path="D:/AuraCommerce/AuraCommerce.CatalogApi/AuraCommerce.CatalogApi.csproj" />
   <Project Path="D:/AuraCommerce/AuraCommerce.IdentityApi/AuraCommerce.IdentityApi.csproj" Id="faf00f44-871d-4d6b-b7a1-3fa7f4a35e28" />
 </Solution>
