@@ -14,4 +14,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuraCommerce.Orders.Application\AuraCommerce.Orders.Application.csproj" />
+    <ProjectReference Include="..\AuraCommerce.Orders.Infrastructure\AuraCommerce.Orders.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

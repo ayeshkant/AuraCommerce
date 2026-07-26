@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuraCommerce.Orders.Domain\AuraCommerce.Orders.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
