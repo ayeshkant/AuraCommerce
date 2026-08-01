@@ -1,8 +1,4 @@
 ﻿using AuraCommerce.Orders.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace AuraCommerce.Orders.Domain.Entities
 {
@@ -10,7 +6,7 @@ namespace AuraCommerce.Orders.Domain.Entities
     {
         public Guid Id { get; private set; }
         public string CustomerId { get; private set; }
-        public List<OrderItem> Items { get; private set; } = new List<OrderItem>();
+        public List<OrderItem> Items { get; private set; }
         public decimal TotalAmount { get; private set; }
         public DateTime CreatedDate { get; private set; }
         public OrderStatus Status { get; private set; }
@@ -24,11 +20,11 @@ namespace AuraCommerce.Orders.Domain.Entities
         {
             if (string.IsNullOrEmpty(customerId))
             {
-                throw new ArgumentNullException("Customer Id is empty or null");
+                throw new ArgumentException("Customer Id is empty or null", nameof(customerId));
             }
-            if (items.Count==0 || items==null)
+            if (items == null || items.Count == 0)
             {
-                throw new ArgumentNullException("Order Items is empty or null");
+                throw new ArgumentNullException("Order Items is empty or null", nameof(items));
             }
 
             var order = new Order();

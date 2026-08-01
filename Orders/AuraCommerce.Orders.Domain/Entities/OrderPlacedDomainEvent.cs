@@ -9,8 +9,18 @@ namespace AuraCommerce.Orders.Domain.Entities
     {
         public OrderPlacedDomainEvent(Guid OrderId, string CustomerId, List<OrderItem> items, DateTime CreatedDate,OrderStatus orderStatus,decimal TotalAmount)
         {
-            //OccurredOn = CreatedDate;
+            this.OrderId = OrderId;
+            this.CustomerId = CustomerId;
+            this.TotalAmount = TotalAmount;
+            Items = items;
+            Status = orderStatus;
+            OccurredOn = CreatedDate;
         }
-        public DateTime OccurredOn => throw new NotImplementedException();
+        public Guid OrderId { get; }
+        public string CustomerId { get; }
+        public List<OrderItem> Items { get; }
+        public OrderStatus Status { get; }
+        public decimal TotalAmount { get; }
+        public DateTime OccurredOn { get; }
     }
 }
