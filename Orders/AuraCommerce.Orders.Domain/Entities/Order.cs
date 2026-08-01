@@ -24,7 +24,7 @@ namespace AuraCommerce.Orders.Domain.Entities
             }
             if (items == null || items.Count == 0)
             {
-                throw new ArgumentNullException("Order Items is empty or null", nameof(items));
+                throw new ArgumentException("Order Items cannot be empty or null", nameof(items));
             }
 
             var order = new Order();
@@ -36,7 +36,14 @@ namespace AuraCommerce.Orders.Domain.Entities
             order.Status = OrderStatus.Created; 
             order.IdempotencyKey = idempotencyKey;
 
-            order.AddDomainEvent(new OrderPlacedDomainEvent(order.Id, order.CustomerId, order.Items, order.CreatedDate, order.Status, order.TotalAmount));
+            order.AddDomainEvent(
+                new OrderPlacedDomainEvent(
+                    order.Id, order.CustomerId, 
+                    order.Items.Select(i=>new OrderPlacedItem (
+                        i.ProductId,i.ProductName,i.UnitPrice,i.Quantity)).ToList(), 
+                    order.CreatedDate, order.Status, order.TotalAmount
+                    )
+                );
 
             return order;
         }
