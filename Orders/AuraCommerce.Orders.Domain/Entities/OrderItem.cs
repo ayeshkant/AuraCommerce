@@ -29,7 +29,7 @@ namespace AuraCommerce.Orders.Domain.Entities
             }
             if (quantity <= 0)
             {
-                throw new ArgumentException("Quantity cannot be negative", nameof(quantity));
+                throw new ArgumentException("Quantity must be greater than zero", nameof(quantity));
             }
             // assignment here
             Id = Guid.NewGuid();
