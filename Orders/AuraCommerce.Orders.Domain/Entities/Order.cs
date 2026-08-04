@@ -6,7 +6,8 @@ namespace AuraCommerce.Orders.Domain.Entities
     {
         public Guid Id { get; private set; }
         public string CustomerId { get; private set; }
-        public List<OrderItem> Items { get; private set; }
+        private readonly List<OrderItem> _items = new();
+        public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
         public decimal TotalAmount { get; private set; }
         public DateTime CreatedDate { get; private set; }
         public OrderStatus Status { get; private set; }
@@ -34,7 +35,7 @@ namespace AuraCommerce.Orders.Domain.Entities
             var order = new Order();
             order.Id = Guid.NewGuid(); 
             order.CustomerId = customerId; 
-            order.Items = items; 
+            order._items.AddRange(items); 
             order.TotalAmount = items.Sum(i => i.UnitPrice * i.Quantity); 
             order.CreatedDate = DateTime.UtcNow; 
             order.Status = OrderStatus.Created; 
