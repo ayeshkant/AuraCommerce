@@ -26,6 +26,10 @@ namespace AuraCommerce.Orders.Domain.Entities
             {
                 throw new ArgumentException("Order Items cannot be empty or null", nameof(items));
             }
+            if (string.IsNullOrEmpty(idempotencyKey))
+            {
+                throw new ArgumentException("Idempotency Key is empty or null", nameof(idempotencyKey));
+            }
 
             var order = new Order();
             order.Id = Guid.NewGuid(); 
