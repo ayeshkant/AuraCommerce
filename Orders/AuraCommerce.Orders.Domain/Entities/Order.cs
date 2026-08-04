@@ -39,7 +39,7 @@ namespace AuraCommerce.Orders.Domain.Entities
             order.AddDomainEvent(
                 new OrderPlacedDomainEvent(
                     order.Id, order.CustomerId, 
-                    order.Items.Select(i=>new OrderPlacedItem (
+                    order.Items.Select(i=>new OrderLineItemSnapshot (
                         i.ProductId,i.ProductName,i.UnitPrice,i.Quantity)).ToList(), 
                     order.CreatedDate, order.Status, order.TotalAmount
                     )
@@ -47,57 +47,52 @@ namespace AuraCommerce.Orders.Domain.Entities
 
             return order;
         }
-        public static Result BeginPaymentProcessing(Order order)
+        public Result BeginPaymentProcessing()
         {
-            if (order.Status == OrderStatus.Shipped || order.Status == OrderStatus.Cancelled || order.Status==OrderStatus.Paid)
-                return Result.Failure("Incorrect Order Status");
-            if (order.Status == OrderStatus.Created)
+            if (Status != OrderStatus.Created)
             {
-                order.Status = OrderStatus.PaymentPending;
+                return Result.Failure($"Cannot mark as payment pending from status {Status}.");
             }
 
+            Status = OrderStatus.PaymentPending;
             return Result.Success();
         }
-        public static Result MarkAsPaid(Order order)
+        public Result MarkAsPaid()
         {
-            if (order.Status == OrderStatus.Shipped || order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Created)
-                return Result.Failure("Incorrect Order Status");
-            if (order.Status == OrderStatus.PaymentPending)
+            if (Status != OrderStatus.PaymentPending)
             {
-                order.Status = OrderStatus.Paid;
+                return Result.Failure($"Cannot mark as paid from status {Status}.");
             }
 
+            Status = OrderStatus.Paid;
             return Result.Success();
         }
-        public static Result MarkAsShipped(Order order)
+        public Result MarkAsShipped()
         {
-            if (order.Status == OrderStatus.PaymentPending || order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Created)
-                return Result.Failure("Incorrect Order Status");
-            if (order.Status == OrderStatus.Paid)
+            if (Status != OrderStatus.Paid)
             {
-                order.Status = OrderStatus.Shipped;
+                return Result.Failure($"Cannot mark as shipped from status {Status}.");
             }
 
+            Status = OrderStatus.Shipped;
             return Result.Success();
         }
-        public static Result Cancel(Order order)
+        public Result Cancel()
         {
-            if (order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Shipped)
-                return Result.Failure("Incorrect Order Status");
-            if (order.Status == OrderStatus.Created || order.Status == OrderStatus.PaymentPending || order.Status == OrderStatus.Paid)
+            if (Status != OrderStatus.Created && Status != OrderStatus.PaymentPending && Status != OrderStatus.Paid)
             {
-                order.Status = OrderStatus.Cancelled;
-
-                order.AddDomainEvent(
-                new OrderCancelledDomainEvent(
-                    order.Id, order.CustomerId,
-                    order.Items.Select(i => new OrderPlacedItem(
-                        i.ProductId, i.ProductName, i.UnitPrice, i.Quantity)).ToList(),
-                    DateTime.Now, order.Status, order.TotalAmount
-                    )
-                );
+                return Result.Failure($"Cannot mark as cancelled from status {Status}.");
             }
 
+            Status = OrderStatus.Cancelled;
+            AddDomainEvent(
+            new OrderCancelledDomainEvent(
+                Id, CustomerId,
+                Items.Select(i => new OrderLineItemSnapshot(
+                    i.ProductId, i.ProductName, i.UnitPrice, i.Quantity)).ToList(),
+                DateTime.UtcNow, Status, TotalAmount
+                )
+            );
             return Result.Success();
         }
     }

@@ -7,18 +7,18 @@ namespace AuraCommerce.Orders.Domain.Entities
 {
     public class OrderCancelledDomainEvent : IDomainEvent
     {
-        public OrderCancelledDomainEvent(Guid OrderId, string CustomerId, List<OrderPlacedItem> items, DateTime CreatedDate, OrderStatus orderStatus, decimal TotalAmount)
+        public OrderCancelledDomainEvent(Guid OrderId, string CustomerId, List<OrderLineItemSnapshot> items, DateTime CancellationDate, OrderStatus orderStatus, decimal TotalAmount)
         {
             this.OrderId = OrderId;
             this.CustomerId = CustomerId;
             this.TotalAmount = TotalAmount;
             Items = items;
             Status = orderStatus;
-            OccurredOn = CreatedDate;
+            OccurredOn = CancellationDate;
         }
         public Guid OrderId { get; }
         public string CustomerId { get; }
-        public List<OrderPlacedItem> Items { get; }
+        public List<OrderLineItemSnapshot> Items { get; }
         public OrderStatus Status { get; }
         public decimal TotalAmount { get; }
         public DateTime OccurredOn { get; }

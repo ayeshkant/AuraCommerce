@@ -7,7 +7,7 @@ namespace AuraCommerce.Orders.Domain.Entities
 {
     public class OrderPlacedDomainEvent : IDomainEvent
     {
-        public OrderPlacedDomainEvent(Guid OrderId, string CustomerId, List<OrderPlacedItem> items, DateTime CreatedDate,OrderStatus orderStatus,decimal TotalAmount)
+        public OrderPlacedDomainEvent(Guid OrderId, string CustomerId, List<OrderLineItemSnapshot> items, DateTime CreatedDate,OrderStatus orderStatus,decimal TotalAmount)
         {
             this.OrderId = OrderId;
             this.CustomerId = CustomerId;
@@ -18,7 +18,7 @@ namespace AuraCommerce.Orders.Domain.Entities
         }
         public Guid OrderId { get; }
         public string CustomerId { get; }
-        public List<OrderPlacedItem> Items { get; }
+        public List<OrderLineItemSnapshot> Items { get; }
         public OrderStatus Status { get; }
         public decimal TotalAmount { get; }
         public DateTime OccurredOn { get; }
