@@ -47,5 +47,58 @@ namespace AuraCommerce.Orders.Domain.Entities
 
             return order;
         }
+        public static Result BeginPaymentProcessing(Order order)
+        {
+            if (order.Status == OrderStatus.Shipped || order.Status == OrderStatus.Cancelled || order.Status==OrderStatus.Paid)
+                return Result.Failure("Incorrect Order Status");
+            if (order.Status == OrderStatus.Created)
+            {
+                order.Status = OrderStatus.PaymentPending;
+            }
+
+            return Result.Success();
+        }
+        public static Result MarkAsPaid(Order order)
+        {
+            if (order.Status == OrderStatus.Shipped || order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Created)
+                return Result.Failure("Incorrect Order Status");
+            if (order.Status == OrderStatus.PaymentPending)
+            {
+                order.Status = OrderStatus.Paid;
+            }
+
+            return Result.Success();
+        }
+        public static Result MarkAsShipped(Order order)
+        {
+            if (order.Status == OrderStatus.PaymentPending || order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Created)
+                return Result.Failure("Incorrect Order Status");
+            if (order.Status == OrderStatus.Paid)
+            {
+                order.Status = OrderStatus.Shipped;
+            }
+
+            return Result.Success();
+        }
+        public static Result Cancel(Order order)
+        {
+            if (order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Shipped)
+                return Result.Failure("Incorrect Order Status");
+            if (order.Status == OrderStatus.Created || order.Status == OrderStatus.PaymentPending || order.Status == OrderStatus.Paid)
+            {
+                order.Status = OrderStatus.Cancelled;
+
+                order.AddDomainEvent(
+                new OrderCancelledDomainEvent(
+                    order.Id, order.CustomerId,
+                    order.Items.Select(i => new OrderPlacedItem(
+                        i.ProductId, i.ProductName, i.UnitPrice, i.Quantity)).ToList(),
+                    DateTime.Now, order.Status, order.TotalAmount
+                    )
+                );
+            }
+
+            return Result.Success();
+        }
     }
 }
