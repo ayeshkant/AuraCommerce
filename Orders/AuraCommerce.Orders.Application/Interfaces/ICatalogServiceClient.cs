@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AuraCommerce.Orders.Application.Interface
+namespace AuraCommerce.Orders.Application.Interfaces
 {
     public interface ICatalogServiceClient
     {

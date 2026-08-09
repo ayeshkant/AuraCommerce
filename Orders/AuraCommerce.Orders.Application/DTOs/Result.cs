@@ -7,8 +7,8 @@ namespace AuraCommerce.Orders.Application.DTOs
 {
     public class Result<T> : Result
     {
-        public T Value { get; }
-        protected Result(bool isSuccess,T value, string? error) : base(isSuccess, error)
+        public T? Value { get; }
+        protected Result(bool isSuccess, T? value, string? error) : base(isSuccess, error)
         {
             Value = value;
         }
