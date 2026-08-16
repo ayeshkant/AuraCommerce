@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AuraCommerce.Orders.Application\AuraCommerce.Orders.Application.csproj" />
     <ProjectReference Include="..\AuraCommerce.Orders.Domain\AuraCommerce.Orders.Domain.csproj" />
   </ItemGroup>
