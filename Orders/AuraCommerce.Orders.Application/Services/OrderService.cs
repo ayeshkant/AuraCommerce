@@ -26,8 +26,8 @@ namespace AuraCommerce.Orders.Application.Services
             {
                 return Result<Guid>.Success(existingOrder.Id);
             }
-            // Step 2 (Catalog resolution) and Step 3 (Order.Create + persist) go here next
-            var OrderItems = new List<OrderItem>();
+            // Step 2 (Catalog resolution) 
+            var orderItems = new List<OrderItem>();
 
             foreach (var item in createOrderRequest.Items)
             {
@@ -36,11 +36,15 @@ namespace AuraCommerce.Orders.Application.Services
                 {
                     return Result<Guid>.Failure($"Product {item.ProductId} does not exist");
                 }
-                OrderItems.Add(new OrderItem(product.ProductId, product.Name, product.Price, item.Quantity));
+                orderItems.Add(new OrderItem(product.ProductId, product.Name, product.Price, item.Quantity));
             }
             // Step 3 (Order.Create + persist) goes here next
+            var order = Order.Create(createOrderRequest.CustomerId, orderItems, createOrderRequest.IdempotencyKey);
 
-            throw new NotImplementedException();
+            await _orderRepository.AddAsync(order);
+            await _orderRepository.SaveChangesAsync();
+
+            return Result<Guid>.Success(order.Id);
         }
     }
 }
