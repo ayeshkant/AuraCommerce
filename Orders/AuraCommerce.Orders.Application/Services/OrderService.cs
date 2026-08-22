@@ -30,12 +30,12 @@ namespace AuraCommerce.Orders.Application.Services
 
             foreach (var item in createOrderRequest.Items)
             {
-                var product = await _catalogServiceClient.GetProductAsync(item.ProductId);
+                var product = await _catalogServiceClient.GetProductAsync(item.ProductSku);
                 if (product==null)
                 {
-                    return Result<Guid>.Failure($"Product {item.ProductId} does not exist");
+                    return Result<Guid>.Failure($"Product {item.ProductSku} does not exist");
                 }
-                orderItems.Add(new OrderItem(product.ProductId, product.Name, product.Price, item.Quantity));
+                orderItems.Add(new OrderItem(product.ProductSku, product.Name, product.Price, item.Quantity));
             }
             var order = Order.Create(createOrderRequest.CustomerId, orderItems, createOrderRequest.IdempotencyKey);
 

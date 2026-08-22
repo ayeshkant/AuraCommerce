@@ -6,8 +6,8 @@ namespace AuraCommerce.Orders.Application.Interfaces
 {
     public interface ICatalogServiceClient
     {
-        Task<ProductInfo?> GetProductAsync(string productId);
+        Task<ProductInfo?> GetProductAsync(string productSku);
     }
 
-    public record ProductInfo(string ProductId, string Name, decimal Price);
+    public record ProductInfo(string ProductSku, string Name, decimal Price);
 }

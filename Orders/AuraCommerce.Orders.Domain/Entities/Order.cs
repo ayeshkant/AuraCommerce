@@ -45,7 +45,7 @@ namespace AuraCommerce.Orders.Domain.Entities
                 new OrderPlacedDomainEvent(
                     order.Id, order.CustomerId, 
                     order.Items.Select(i=>new OrderLineItemSnapshot (
-                        i.ProductId,i.ProductName,i.UnitPrice,i.Quantity)).ToList(), 
+                        i.ProductSku,i.ProductName,i.UnitPrice,i.Quantity)).ToList(), 
                     order.CreatedDate, order.Status, order.TotalAmount
                     )
                 );
@@ -94,7 +94,7 @@ namespace AuraCommerce.Orders.Domain.Entities
             new OrderCancelledDomainEvent(
                 Id, CustomerId,
                 Items.Select(i => new OrderLineItemSnapshot(
-                    i.ProductId, i.ProductName, i.UnitPrice, i.Quantity)).ToList(),
+                    i.ProductSku, i.ProductName, i.UnitPrice, i.Quantity)).ToList(),
                 DateTime.UtcNow, Status, TotalAmount
                 )
             );

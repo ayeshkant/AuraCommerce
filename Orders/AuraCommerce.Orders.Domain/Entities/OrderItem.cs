@@ -7,17 +7,17 @@ namespace AuraCommerce.Orders.Domain.Entities
     public class OrderItem
     {
         public Guid Id { get; private set; }
-        public string ProductId { get; private set; }
+        public string ProductSku { get; private set; }
         public string ProductName { get; private set; }
         public decimal UnitPrice { get; private set; }
         public int Quantity { get; private set; }
         public decimal LineTotal => UnitPrice * Quantity;
-        public OrderItem(string productId, string productName, decimal unitPrice, int quantity)
+        public OrderItem(string productSku, string productName, decimal unitPrice, int quantity)
         {
             // validation here
-            if (string.IsNullOrEmpty(productId))
+            if (string.IsNullOrEmpty(productSku))
             {
-                throw new ArgumentException("Product Id is empty or null", nameof(productId));
+                throw new ArgumentException("Product Id is empty or null", nameof(productSku));
             }
             if (string.IsNullOrEmpty(productName))
             {
@@ -33,7 +33,7 @@ namespace AuraCommerce.Orders.Domain.Entities
             }
             // assignment here
             Id = Guid.NewGuid();
-            ProductId = productId;
+            ProductSku = productSku;
             ProductName = productName;
             UnitPrice = unitPrice;
             Quantity = quantity;
