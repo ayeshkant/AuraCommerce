@@ -19,12 +19,16 @@ namespace AuraCommerce.Orders.Infrastructure.Context
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Order>(builder =>
             {
-                // relationship + backing field configuration comes next
+                builder.HasMany(o => o.Items)
+                    .WithOne()
+                    .HasForeignKey("OrderId")
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<OrderItem>(builder =>
             {
-                // configuration comes next
+                builder.HasKey(oi => oi.Id);
             });
         }
     }
