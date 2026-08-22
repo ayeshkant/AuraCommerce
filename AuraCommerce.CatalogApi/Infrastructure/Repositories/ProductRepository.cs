@@ -86,5 +86,12 @@ namespace AuraCommerce.CatalogApi.Infrastructure.Repositories
 
             return rowsAffected > 0;
         }
+
+        public async Task<int?> GetProductIdBySkuAsync(string sku)
+        {
+            var productId= await _dbContext.Products.Where(p => p.SKU == sku).Select(p => (int?)p.Id).FirstOrDefaultAsync();
+
+            return productId;
+        }
     }
 }

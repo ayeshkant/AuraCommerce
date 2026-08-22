@@ -9,5 +9,6 @@ namespace AuraCommerce.CatalogApi.Core.Interfaces
         public Task<ProductDto> CreateProduct(CreateProductDto product);
         public Task<bool> UpdateProduct(int id, UpdateProductDto productDto);
         public Task<bool> DeleteProduct(int id);
+        Task<int?> GetProductIdBySkuAsync(string sku);
     }
 }

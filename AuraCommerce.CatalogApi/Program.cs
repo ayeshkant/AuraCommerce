@@ -197,22 +197,7 @@ try
     });
     app.MapGet("/api/products/{id}", async (int id,IProductRepository productRepository, IDistributedCache cache) =>
     {
-        string cacheKey = $"product_{id}";
-        var cachedData = await cache.GetStringAsync(cacheKey);
-        if (!string.IsNullOrEmpty(cachedData))
-        {
-            var cachedProduct=JsonSerializer.Deserialize<ProductDto>(cachedData);
-            return Results.Ok(cachedProduct);
-        }
-        // Write your async LINQ query here to fetch products
-        var product = await productRepository.GetProduct(id);
-        if (product == null) return Results.NotFound();
-        var serializedData = JsonSerializer.Serialize(product);
-        var cacheOption=new DistributedCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromHours(1)) // Hard kill switch after 1 hour
-                            .SetSlidingExpiration(TimeSpan.FromMinutes(10)); // Keep alive if requested within 10 min
-        await cache.SetStringAsync(cacheKey, serializedData, cacheOption);
-        return Results.Ok(product);
+        return await GetOrCacheProductAsync(id, productRepository, cache);
     });
     app.MapPost("/api/products", async (CreateProductDto newProduct, IProductRepository productRepository, IValidator<CreateProductDto> validator, IDistributedCache cache) =>
     {
@@ -254,7 +239,14 @@ try
     
         return Results.NoContent(); // 204 No Content is standard for successful updates
     }).RequireAuthorization("RequireAdminRole");
-    
+    app.MapGet("/api/products/by-sku/{sku}", async (string sku, IProductRepository productRepository, IDistributedCache cache) =>
+    {
+        var id = await productRepository.GetProductIdBySkuAsync(sku);
+        if (id == null) return Results.NotFound();
+
+        return await GetOrCacheProductAsync(id.Value, productRepository, cache);
+    });
+
     app.Run();
 }
 catch (Exception ex)
@@ -264,4 +256,23 @@ catch (Exception ex)
 finally
 {
     Log.CloseAndFlush();
+}
+async Task<IResult> GetOrCacheProductAsync(int id, IProductRepository repo, IDistributedCache cache)
+{
+    string cacheKey = $"product_{id}";
+    var cachedData = await cache.GetStringAsync(cacheKey);
+    if (!string.IsNullOrEmpty(cachedData))
+    {
+        var cachedProduct = JsonSerializer.Deserialize<ProductDto>(cachedData);
+        return Results.Ok(cachedProduct);
+    }
+    // Write your async LINQ query here to fetch products
+    var product = await repo.GetProduct(id);
+    if (product == null) return Results.NotFound();
+    var serializedData = JsonSerializer.Serialize(product);
+    var cacheOption = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromHours(1)) // Hard kill switch after 1 hour
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(10)); // Keep alive if requested within 10 min
+    await cache.SetStringAsync(cacheKey, serializedData, cacheOption);
+    return Results.Ok(product);
 }
