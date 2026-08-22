@@ -17,7 +17,7 @@ namespace AuraCommerce.Orders.Domain.Entities
             // validation here
             if (string.IsNullOrEmpty(productSku))
             {
-                throw new ArgumentException("Product Id is empty or null", nameof(productSku));
+                throw new ArgumentException("Product Sku is empty or null", nameof(productSku));
             }
             if (string.IsNullOrEmpty(productName))
             {
