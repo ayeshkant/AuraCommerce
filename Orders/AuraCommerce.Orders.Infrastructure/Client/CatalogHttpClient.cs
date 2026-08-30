@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 
-namespace AuraCommerce.Orders.Application.Client
+namespace AuraCommerce.Orders.Infrastructure.Client
 {
     public class CatalogHttpClient : ICatalogServiceClient
     {
@@ -19,7 +19,7 @@ namespace AuraCommerce.Orders.Application.Client
         {
             var response = await _httpClient.GetAsync($"/api/products/by-sku/{productSku}");
 
-            if (response.StatusCode==HttpStatusCode.NotFound)
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
             }

@@ -28,20 +28,21 @@ namespace AuraCommerce.CatalogApi.Infrastructure.Repositories
             {
                 ProductName = newProduct.Name,
                 Sku = newProduct.SKU,
-                Id = newProduct.Id
+                Id = newProduct.Id,
+                Price=newProduct.Price
             };
         }
 
         public async Task<List<ProductDto>> GetAllProducts()
         {
-            var products = await _dbContext.Products.Select(p => new ProductDto { ProductName = p.Name, Sku = p.SKU }).ToListAsync();
+            var products = await _dbContext.Products.Select(p => new ProductDto { ProductName = p.Name, Sku = p.SKU, Price=p.Price }).ToListAsync();
 
             return products;
         }
 
         public async Task<ProductDto> GetProduct(int productId)
         {
-            var product = await _dbContext.Products.Where(p => p.Id == productId).Select(p => new ProductDto { ProductName = p.Name, Sku = p.SKU }).FirstOrDefaultAsync();
+            var product = await _dbContext.Products.Where(p => p.Id == productId).Select(p => new ProductDto { ProductName = p.Name, Sku = p.SKU, Price = p.Price }).FirstOrDefaultAsync();
 
             return product;
         }
