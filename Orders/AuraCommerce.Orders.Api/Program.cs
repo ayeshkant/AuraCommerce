@@ -1,6 +1,15 @@
+using AuraCommerce.Orders.Domain.Interfaces;
+using AuraCommerce.Orders.Infrastructure.Context;
+using AuraCommerce.Orders.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("OrderDb");
+
 // Add services to the container.
+builder.Services.AddDbContext<OrderDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
