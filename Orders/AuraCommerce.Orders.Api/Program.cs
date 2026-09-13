@@ -1,4 +1,5 @@
 using AuraCommerce.Orders.Application.Interfaces;
+using AuraCommerce.Orders.Application.Services;
 using AuraCommerce.Orders.Domain.Interfaces;
 using AuraCommerce.Orders.Infrastructure.Client;
 using AuraCommerce.Orders.Infrastructure.Context;
@@ -16,6 +17,7 @@ builder.Services.AddHttpClient<ICatalogServiceClient, CatalogHttpClient>(client 
 {
     client.BaseAddress = new Uri(builder.Configuration["CatalogApi:BaseUrl"]!);
 }).AddStandardResilienceHandler();
+builder.Services.AddScoped<OrderService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
