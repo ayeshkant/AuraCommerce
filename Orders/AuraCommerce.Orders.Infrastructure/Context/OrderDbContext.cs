@@ -34,7 +34,7 @@ namespace AuraCommerce.Orders.Infrastructure.Context
                 builder.HasKey(oi => oi.Id);
             });
         }
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var aggregatesWithEvents = ChangeTracker.Entries<AggregateRoot>()
                 .Select(a => a.Entity)
@@ -55,7 +55,7 @@ namespace AuraCommerce.Orders.Infrastructure.Context
                 aggregate.ClearDomainEvents();
             }
 
-            return base.SaveChangesAsync(cancellationToken);
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
