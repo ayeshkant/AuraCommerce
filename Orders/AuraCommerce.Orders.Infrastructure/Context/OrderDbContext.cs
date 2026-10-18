@@ -20,19 +20,7 @@ namespace AuraCommerce.Orders.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Order>(builder =>
-            {
-                builder.HasMany(o => o.Items)
-                    .WithOne()
-                    .HasForeignKey("OrderId")
-                    .IsRequired()
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            modelBuilder.Entity<OrderItem>(builder =>
-            {
-                builder.HasKey(oi => oi.Id);
-            });
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(OrderDbContext).Assembly);
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
