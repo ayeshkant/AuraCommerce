@@ -21,7 +21,7 @@ namespace AuraCommerce.Orders.Infrastructure.Migrations
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     IdempotencyKey = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuraCommerce.Orders.Infrastructure.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20261019024805_InitialOrdersSchema")]
+    [Migration("20261019063107_InitialOrdersSchema")]
     partial class InitialOrdersSchema
     {
         /// <inheritdoc />
@@ -45,6 +45,7 @@ namespace AuraCommerce.Orders.Infrastructure.Migrations
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
+                        .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 

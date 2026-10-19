@@ -21,7 +21,7 @@ namespace AuraCommerce.Orders.Infrastructure.Configurations
             builder.Property(o => o.TotalAmount).HasPrecision(18, 2);
             builder.Property(o => o.CreatedDate).IsRequired();
             builder.Property(o => o.Status).HasConversion<string>().HasMaxLength(32).IsRequired();
-            builder.Property<byte[]>("RowVersion").IsRowVersion();
+            builder.Property<byte[]>("RowVersion").IsRowVersion().IsRequired();
 
             builder.Ignore(o => o.DomainEvents);
 
