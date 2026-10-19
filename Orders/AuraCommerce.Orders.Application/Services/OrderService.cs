@@ -1,6 +1,7 @@
 ﻿using AuraCommerce.Orders.Application.DTOs;
 using AuraCommerce.Orders.Application.Interfaces;
 using AuraCommerce.Orders.Domain.Entities;
+using AuraCommerce.Orders.Domain.Exceptions;
 using AuraCommerce.Orders.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace AuraCommerce.Orders.Application.Services
         }
         public async Task<Result<Guid>> CreateOrderAsync(CreateOrderRequest createOrderRequest)
         {
-            var existingOrder = await _orderRepository.GetByIdempotencyKeyAsync(createOrderRequest.IdempotencyKey);
+            var existingOrder = await _orderRepository.GetByIdempotencyKeyAsync(createOrderRequest.CustomerId, createOrderRequest.IdempotencyKey);
 
             if (existingOrder!=null)
             {
@@ -39,8 +40,20 @@ namespace AuraCommerce.Orders.Application.Services
             }
             var order = Order.Create(createOrderRequest.CustomerId, orderItems, createOrderRequest.IdempotencyKey);
 
-            await _orderRepository.AddAsync(order);
-            await _orderRepository.SaveChangesAsync();
+            try
+            {
+                await _orderRepository.AddAsync(order);
+                await _orderRepository.SaveChangesAsync();
+            }
+            catch (DuplicateOrderException)
+            {
+                var winner = await _orderRepository.GetByIdempotencyKeyAsync(
+                    createOrderRequest.CustomerId, createOrderRequest.IdempotencyKey);
+
+                return winner != null
+                    ? Result<Guid>.Success(winner.Id)
+                    : Result<Guid>.Failure("Could not create the order. Please retry.");
+            }
 
             return Result<Guid>.Success(order.Id);
         }

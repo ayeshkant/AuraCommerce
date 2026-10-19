@@ -9,7 +9,7 @@ namespace AuraCommerce.Orders.Domain.Interfaces
     {
         Task<Order?> GetByIdAsync(Guid id);
         Task<IReadOnlyList<Order>> GetByCustomerIdAsync(string customerId);
-        Task<Order?> GetByIdempotencyKeyAsync(string idempotencyKey);
+        Task<Order?> GetByIdempotencyKeyAsync(string customerId, string idempotencyKey);
         Task AddAsync(Order order);
         Task SaveChangesAsync();
     }
