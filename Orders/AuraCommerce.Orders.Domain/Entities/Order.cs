@@ -56,7 +56,7 @@ namespace AuraCommerce.Orders.Domain.Entities
         {
             if (Status != OrderStatus.Created)
             {
-                return Result.Failure($"Cannot mark as payment pending from status {Status}.");
+                return Result.Failure($"Cannot mark as payment pending from status {Status}.", ErrorType.Conflict);
             }
 
             Status = OrderStatus.PaymentPending;
@@ -66,7 +66,7 @@ namespace AuraCommerce.Orders.Domain.Entities
         {
             if (Status != OrderStatus.PaymentPending)
             {
-                return Result.Failure($"Cannot mark as paid from status {Status}.");
+                return Result.Failure($"Cannot mark as paid from status {Status}.", ErrorType.Conflict);
             }
 
             Status = OrderStatus.Paid;
@@ -76,7 +76,7 @@ namespace AuraCommerce.Orders.Domain.Entities
         {
             if (Status != OrderStatus.Paid)
             {
-                return Result.Failure($"Cannot mark as shipped from status {Status}.");
+                return Result.Failure($"Cannot mark as shipped from status {Status}.", ErrorType.Conflict);
             }
 
             Status = OrderStatus.Shipped;
@@ -86,7 +86,7 @@ namespace AuraCommerce.Orders.Domain.Entities
         {
             if (Status != OrderStatus.Created && Status != OrderStatus.PaymentPending && Status != OrderStatus.Paid)
             {
-                return Result.Failure($"Cannot mark as cancelled from status {Status}.");
+                return Result.Failure($"Cannot mark as cancelled from status {Status}.", ErrorType.Conflict);
             }
 
             Status = OrderStatus.Cancelled;

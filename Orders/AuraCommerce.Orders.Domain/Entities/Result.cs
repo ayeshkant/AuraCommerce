@@ -8,7 +8,8 @@ namespace AuraCommerce.Orders.Domain.Entities
     {
         public bool IsSuccess { get;}
         public string? Error { get;}
-        protected Result(bool isSuccess, string? error)
+        public ErrorType Type { get; }
+        protected Result(bool isSuccess, string? error, ErrorType type)
         {
             if (!isSuccess && string.IsNullOrEmpty(error))
             {
@@ -20,8 +21,9 @@ namespace AuraCommerce.Orders.Domain.Entities
             }
             IsSuccess = isSuccess;
             Error = error;
+            Type = type;
         }
-        public static Result Success() => new Result(true, null);
-        public static Result Failure(string error) => new Result(false, error);
+        public static Result Success() => new Result(true, null, ErrorType.None);
+        public static Result Failure(string error, ErrorType type) => new Result(false, error, type);
     }
 }

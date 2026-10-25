@@ -34,7 +34,7 @@ namespace AuraCommerce.Orders.Application.Services
                 var product = await _catalogServiceClient.GetProductAsync(item.ProductSku);
                 if (product==null)
                 {
-                    return Result<Guid>.Failure($"Product {item.ProductSku} does not exist");
+                    return Result<Guid>.Failure($"Product {item.ProductSku} does not exist", ErrorType.Conflict);
                 }
                 orderItems.Add(new OrderItem(product.ProductSku, product.Name, product.Price, item.Quantity));
             }
@@ -52,7 +52,7 @@ namespace AuraCommerce.Orders.Application.Services
 
                 return winner != null
                     ? Result<Guid>.Success(winner.Id)
-                    : Result<Guid>.Failure("Could not create the order. Please retry.");
+                    : Result<Guid>.Failure("Could not create the order. Please retry.", ErrorType.Conflict);
             }
 
             return Result<Guid>.Success(order.Id);
@@ -62,7 +62,7 @@ namespace AuraCommerce.Orders.Application.Services
             var order = await _orderRepository.GetByIdAsync(orderId);
             if (order==null || order.CustomerId!=customerId)
             {
-                return Result.Failure("Order not found");
+                return Result.Failure("Order not found", ErrorType.NotFound);
             }
             var cancelResult=order.Cancel();
 
@@ -79,7 +79,7 @@ namespace AuraCommerce.Orders.Application.Services
             var order = await _orderRepository.GetByIdAsync(orderId);
             if (order == null)
             {
-                return Result.Failure("Order not found");
+                return Result.Failure("Order not found", ErrorType.NotFound);
             }
             var orderResult = order.MarkAsPaid();
 
@@ -96,7 +96,7 @@ namespace AuraCommerce.Orders.Application.Services
             var order = await _orderRepository.GetByIdAsync(orderId);
             if (order == null)
             {
-                return Result.Failure("Order not found");
+                return Result.Failure("Order not found", ErrorType.NotFound);
             }
             var orderResult = order.MarkAsShipped();
 
