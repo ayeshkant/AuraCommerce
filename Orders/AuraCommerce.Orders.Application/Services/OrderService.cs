@@ -1,5 +1,6 @@
 ﻿using AuraCommerce.Orders.Application.DTOs;
 using AuraCommerce.Orders.Application.Interfaces;
+using AuraCommerce.Orders.Application.Mappings;
 using AuraCommerce.Orders.Domain.Entities;
 using AuraCommerce.Orders.Domain.Exceptions;
 using AuraCommerce.Orders.Domain.Interfaces;
@@ -34,7 +35,7 @@ namespace AuraCommerce.Orders.Application.Services
                 var product = await _catalogServiceClient.GetProductAsync(item.ProductSku);
                 if (product==null)
                 {
-                    return Result<Guid>.Failure($"Product {item.ProductSku} does not exist", ErrorType.Conflict);
+                    return Result<Guid>.Failure($"Product {item.ProductSku} does not exist", ErrorType.Validation);
                 }
                 orderItems.Add(new OrderItem(product.ProductSku, product.Name, product.Price, item.Quantity));
             }
@@ -107,6 +108,21 @@ namespace AuraCommerce.Orders.Application.Services
 
             await _orderRepository.SaveChangesAsync();
             return Result.Success();
+        }
+        public async Task<Result<OrderResponse>> GetOrderAsync(Guid orderId, string customerId)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order == null || order.CustomerId != customerId)
+            {
+                return Result<OrderResponse>.Failure("Order not found", ErrorType.NotFound);
+            }
+            return Result<OrderResponse>.Success(order.ToResponse());
+        }
+
+        public async Task<IReadOnlyList<OrderResponse>> GetOrdersAsync(string customerId)
+        {
+            var orders = await _orderRepository.GetByCustomerIdAsync(customerId);
+            return orders.Select(o => o.ToResponse()).ToList();
         }
     }
 }

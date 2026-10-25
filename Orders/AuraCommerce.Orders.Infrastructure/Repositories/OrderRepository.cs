@@ -26,8 +26,11 @@ namespace AuraCommerce.Orders.Infrastructure.Repositories
 
         public async Task<IReadOnlyList<Order>> GetByCustomerIdAsync(string customerId)
         {
-            return await _dbContext.Orders.Include(o => o.Items)
-                                .Where(o => o.CustomerId== customerId).ToListAsync();
+            return await _dbContext.Orders.AsNoTracking()
+                .Include(o => o.Items)
+                .Where(o => o.CustomerId == customerId)
+                .OrderByDescending(o => o.CreatedDate)
+                .ToListAsync();
         }
 
         public async Task<Order?> GetByIdAsync(Guid id)

@@ -12,13 +12,14 @@ namespace AuraCommerce.Orders.Domain.Entities
         protected Result(bool isSuccess, string? error, ErrorType type)
         {
             if (!isSuccess && string.IsNullOrEmpty(error))
-            {
                 throw new InvalidOperationException("A failed result must have an error message.");
-            }
             if (isSuccess && !string.IsNullOrEmpty(error))
-            {
                 throw new InvalidOperationException("A successful result cannot have an error message.");
-            }
+            if (isSuccess && type != ErrorType.None)
+                throw new InvalidOperationException("A successful result cannot have an error type.");
+            if (!isSuccess && type == ErrorType.None)
+                throw new InvalidOperationException("A failed result must have an error type.");
+
             IsSuccess = isSuccess;
             Error = error;
             Type = type;
